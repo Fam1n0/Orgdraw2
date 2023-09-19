@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: white;
+  }
+  #drawingCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="drawingCanvas" width="800" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('drawingCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const configurations = [
+    { velocity: 2, changeFrequency: 0.1, lineWidth: 2 },
+    { velocity: 3, changeFrequency: 0.2, lineWidth: 1 },
+    { velocity: 1.5, changeFrequency: 0.05, lineWidth: 3 },
+    { velocity: 2.5, changeFrequency: 0.15, lineWidth: 2.5 }
+  ];
+
+  const config = configurations[Math.floor(Math.random() * configurations.length)];
+
+  let x = canvas.width / 2;
+  let y = canvas.height / 2;
+  let angle = Math.random() * Math.PI * 2;
+  let velocity = config.velocity;
+  let changeFrequency = config.changeFrequency;
+  let lineWidth = config.lineWidth;
+
+  ctx.strokeStyle = 'rgb(0, 0, 0)'; // Set initial color to black
+  ctx.lineWidth = lineWidth;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+
+  function draw() {
+    const randomFactor = Math.random() * 0.5 + 0.75;
+    const randomAngle = (Math.random() - 0.5) * changeFrequency;
+
+    x += velocity * Math.cos(angle) * randomFactor;
+    y += velocity * Math.sin(angle) * randomFactor;
+    angle += randomAngle;
+
+    // Check if the line is far enough outside the canvas before wrapping it around
+    if (x < -200) {
+      x = canvas.width + 200;
+    } else if (x > canvas.width + 200) {
+      x = -200;
+    }
+    if (y < -200) {
+      y = canvas.height + 200;
+    } else if (y > canvas.height + 200) {
+      y = -200;
+    }
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+</body>
+</html>
